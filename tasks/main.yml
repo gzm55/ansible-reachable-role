@@ -1,0 +1,9 @@
+---
+- name: Check ssh port is reachable
+  connection: local
+  wait_for:
+    host: "{{ inventory_hostname }}"
+    port: "{{ ansible_port | default(22) }}"
+    state: started
+    connect_timeout: 2
+    timeout: 2
