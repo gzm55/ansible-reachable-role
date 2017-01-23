@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gzm55/ansible-reachable-role.svg?branch=master)](https://travis-ci.org/gzm55/ansible-reachable-role)
+
 Role Name
 =========
 
