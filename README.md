@@ -28,7 +28,7 @@ Including an example of how to use your role (for instance, with variables passe
     - hosts: servers
       gather_facts: False
       roles:
-         - reachable
+         - gzm55.reachable
 
 License
 -------
