@@ -1,10 +1,5 @@
 ---
-- hosts: github.com
-  gather_facts: False
-  roles:
-    - reachable
-
-- hosts: baidu.com
+- hosts: all
   gather_facts: False
   roles:
     - reachable
