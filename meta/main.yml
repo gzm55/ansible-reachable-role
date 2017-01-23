@@ -2,10 +2,6 @@ galaxy_info:
   author: James Z.M. Gao
   description: a simple role for testing reachability of ssh ports for each host
 
-  # If the issue tracker for your role is not on github, uncomment the
-  # next line and provide a value
-  # issue_tracker_url: http://example.com/issue/tracker
-
   license: BSD
 
   min_ansible_version: 2.0
