@@ -1,22 +1,9 @@
 ---
-- name: read remote_port from config
-  connection: local
-  run_once: True
-  set_fact:
-    ansible_cfg_remote_port: "{{ lookup('ini', 'remote_port section=defaults file={{item}}') | d('22', True) }}"
-  with_first_found:
-  - files:
-    - "{{ lookup('env', 'ANSIBLE_CONFIG') | d('ansible.cfg', True) }}"
-    - ansible.cfg
-    - "{{ '~/.ansible.cfg' | expanduser }}"
-    - /etc/ansible/ansible.cfg
-    skip: True
-
-- name: Check ssh port is reachable
+- name: ssh port should be reachable
   connection: local
   wait_for:
     host: "{{ ansible_host | d(inventory_hostname) }}"
-    port: "{{ ansible_port | d(ansible_cfg_remote_port) | d(22) }}"
+    port: "{{ ansible_port | d(local_ansible_config['defaults']['remote_port']) | d(22) }}"
     state: started
     connect_timeout: 2
     timeout: 2

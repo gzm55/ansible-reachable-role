@@ -24,4 +24,21 @@ galaxy_info:
   - networking
   - system
 
-dependencies: []
+dependencies:
+- role: gzm55.local_ansible_config
+  config_key:
+  - defaults.remote_port
+  - ssh_connection.ssh_executable
+
+- role: gzm55.require_local_command
+  only_check: True
+  command: "{{ ansible_play_batch
+               | map('extract', hostvars)
+               | selectattr('ansible_ssh_executable', 'defined')
+               | map(attribute='ansible_ssh_executable')
+               | list
+               | union((ansible_play_batch
+                        | map('extract', hostvars)
+                        | rejectattr('ansible_ssh_executable', 'defined')
+                        | list
+                        | length == 0) | ternary([], [local_ansible_config['ssh_connection']['ssh_executable'] | d('ssh', True)])) }}"

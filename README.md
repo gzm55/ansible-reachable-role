@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/gzm55/ansible-reachable-role.svg?branch=master)](https://travis-ci.org/gzm55/ansible-reachable-role)
 
-Role Name
+reachable
 =========
 
 Role for testing reachability of ssh ports for each host.
@@ -8,7 +8,9 @@ Role for testing reachability of ssh ports for each host.
 Requirements
 ------------
 
-No.
+python modules:
+* ansible>=2.0
+* jinja2>=2.7
 
 Role Variables
 --------------
@@ -18,7 +20,8 @@ No.
 Dependencies
 ------------
 
-No
+* `gzm55.local_ansible_config`
+* `gzm55.require_local_command`
 
 Example Playbook
 ----------------
