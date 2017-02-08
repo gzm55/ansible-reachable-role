@@ -7,21 +7,18 @@ galaxy_info:
   min_ansible_version: 2.0
 
   platforms:
-  - name: MacOSX
-    versions:
-    - all
   - name: GenericBSD
     versions:
-    - all
+    - any
   - name: GenericLinux
     versions:
-    - all
+    - any
   - name: Windows
     versions:
     - all
   - name: GenericUNIX
     versions:
-    - all
+    - any
 
   galaxy_tags:
   - networking
