@@ -41,4 +41,7 @@ dependencies:
                         | map('extract', hostvars)
                         | rejectattr('ansible_ssh_executable', 'defined')
                         | list
-                        | length == 0) | ternary([], [local_ansible_config['ssh_connection']['ssh_executable'] | d('ssh', True)])) }}"
+                        | length == 0) | ternary([], [ [local_ansible_config, {'ssh_connection': {'ssh_executable':'ssh'}}]
+                                                     | selectattr('ssh_connection', 'defined')
+                                                     | map(attribute='ssh_connection.ssh_executable')
+                                                     | select('defined') | first ] )) }}"
