@@ -26,4 +26,5 @@ galaxy_info:
 
 allow_duplicates: no
 dependencies:
+- { role: gzm55.require_implicity_localhost }
 - { role: gzm55.local_ansible_config, config_key: defaults/remote_port }
