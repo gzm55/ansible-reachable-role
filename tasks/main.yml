@@ -2,7 +2,7 @@
 - name: ssh port should be reachable
   delegate_to: localhost
   wait_for:
-    host: "{{ ansible_host | d(inventory_hostname) }}"
+    host: "{{ hostvars[inventory_hostname].ansible_host | d(inventory_hostname) }}"
     port: "{{ ansible_port | d(local_ansible_config['defaults/remote_port']) | d(22) }}"
     state: started
     connect_timeout: 2
