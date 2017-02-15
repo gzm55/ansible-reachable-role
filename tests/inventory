@@ -1,3 +1,4 @@
+baidu.com
+baidu80 ansible_host=baidu.com ansible_port=80
 github.com
-baidu.com ansible_port=80
-xxx ansible_host=github.com ansible_port=443
+github80 ansible_host=github.com  ansible_port=443

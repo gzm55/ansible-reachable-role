@@ -10,7 +10,7 @@ Requirements
 
 python modules:
 * ansible>=2.0
-* jinja2>=2.7
+* jinja2>=2.6
 
 Role Variables
 --------------
@@ -20,8 +20,8 @@ No.
 Dependencies
 ------------
 
-* `gzm55.local_ansible_config`
-* `gzm55.require_local_command`
+* `gzm55.require_implicity_localhost`
+
 
 Example Playbook
 ----------------
