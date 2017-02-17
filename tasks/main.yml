@@ -1,6 +1,9 @@
 ---
 - name: ssh port should be reachable
   delegate_to: localhost
+  become: False
+  vars:
+  - ansible_become: False
   wait_for:
     host: "{{ hostvars[inventory_hostname].ansible_host | d(inventory_hostname) }}"
     port: "{{ ansible_port | d(22) }}"
