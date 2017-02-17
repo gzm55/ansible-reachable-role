@@ -37,7 +37,7 @@ script:
   - ANSIBLE_REMOTE_PORT=80 ansible-playbook tests/test.yml -i tests/inventory
   - ANSIBLE_REMOTE_PORT=80 ansible-playbook tests/test.yml -i tests/inventory --become
   - true && ! ANSIBLE_REMOTE_PORT=11 ansible-playbook tests/test.yml -i tests/inventory
-  - ANSIBLE_REMOTE_PORT=11 ansible-playbook tests/test.yml -i tests/inventory --limit '!baidu.com:!github.com'
+  - ANSIBLE_REMOTE_PORT=11 ansible-playbook tests/test.yml -i tests/inventory --limit '!baidu.com:!github.com' -e 'ansible_become=True'
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

@@ -2,8 +2,13 @@
 - name: ssh port should be reachable
   delegate_to: localhost
   become: False
+  become_method: dzdo
   vars:
   - ansible_become: False
+  - ansible_become_method: dzdo
+  - ansible_become_pass: ''
+  - ansible_become_exe: "{{ role_path | quote }}/files/force-disable-become.sh"
+  - ansible_ssh_pipelining: True
   wait_for:
     host: "{{ hostvars[inventory_hostname].ansible_host | d(inventory_hostname) }}"
     port: "{{ ansible_port | d(22) }}"
