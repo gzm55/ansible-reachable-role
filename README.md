@@ -22,6 +22,7 @@ Dependencies
 
 * `gzm55.require_implicity_localhost`
 * `gzm55.require_disabe_become`
+* `gzm55.local_id_plugin`
 
 Example Playbook
 ----------------

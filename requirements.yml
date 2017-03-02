@@ -1,2 +1,3 @@
 - src: gzm55.require_implicity_localhost
 - src: gzm55.require_disabe_become
+- src: gzm55.local_id_plugin

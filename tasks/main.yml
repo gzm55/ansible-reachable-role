@@ -2,10 +2,10 @@
 - name: ssh port should be reachable
   delegate_to: localhost
   become: False
-  become_user: "{{ ansible_user | d(ansible_local_user, True) }}"
+  become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
   vars:
   - ansible_become: False
-  - ansible_become_user: "{{ ansible_user | d(ansible_local_user, True) }}"
+  - ansible_become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
   wait_for:
     host: "{{ hostvars[inventory_hostname].ansible_host | d(inventory_hostname) }}"
     port: "{{ ansible_port | d(22) }}"
