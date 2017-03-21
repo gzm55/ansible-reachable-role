@@ -3,7 +3,13 @@
 reachable
 =========
 
-Role for testing reachability of ssh ports for each host.
+Role for testing reachability of remote tcp ports of ansible connections for each host.
+
+For `ssh`/`paramiko`/`smart` connection, use `ansible_port` or 22 port,
+for `winrm` connection, use `ansible_port` or [5985/5986](https://az1ss.prod.mediav.com:8443/manager?project=etl-reports&flow=360realtime),
+for `funcd` connection, use [51234](http://advanced-sysadmin-stuff.blogspot.co.id/2011/03/func-fedora-unified-network-controller.html),
+for other local or local container connection, just skip checking.
+
 
 Requirements
 ------------

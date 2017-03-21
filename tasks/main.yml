@@ -6,9 +6,16 @@
   vars:
   - ansible_become: False
   - ansible_become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
+  - inv_conn: "{{ (hostvars[inventory_hostname].ansible_connection | d('ssh') | intersect('smart', 'paramiko') | list | length == 1)
+                  | ternary('ssh', hostvars[inventory_hostname].ansible_connection | d('ssh')) }}"
+  when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd']) | list | length == 1
   wait_for:
     host: "{{ hostvars[inventory_hostname].ansible_host | d(inventory_hostname) }}"
-    port: "{{ ansible_port | d(22) }}"
+    port: "{{ inv_conn | extract(
+              { 'ssh': ansible_port | d(22),
+                'winrm': ansible_port | d((ansible_winrm_scheme|d('https') == 'https') | ternary(5986, 5985)),
+                'funcd': 51234,
+              }) }}"
     state: started
     connect_timeout: 2
     timeout: 2
