@@ -1,12 +1,12 @@
 ---
-- name: ssh port should be reachable
+- name: remote managing port should be reachable
   delegate_to: localhost
   become: False
   become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
   vars:
   - ansible_become: False
   - ansible_become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
-  - inv_conn: "{{ (hostvars[inventory_hostname].ansible_connection | d('ssh') | intersect('smart', 'paramiko') | list | length == 1)
+  - inv_conn: "{{ (hostvars[inventory_hostname].ansible_connection | d('ssh') | intersect(['smart', 'paramiko']) | list | length == 1)
                   | ternary('ssh', hostvars[inventory_hostname].ansible_connection | d('ssh')) }}"
   when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd']) | list | length == 1
   wait_for:
