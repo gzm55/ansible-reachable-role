@@ -2,7 +2,16 @@
 - name: remote managing port should be reachable
   delegate_to: localhost
   become: False
-  become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
+  become_user: >-
+    {{ ansible_version.full
+       | version_compare('2.0', '<')
+       | ternary(hostvars[inventory_hostname].ansible_ssh_user
+                 | d(ansible_ssh_user),
+                 hostvars[inventory_hostname].ansible_ssh_user
+                 | d(hostvars[inventory_hostname].ansible_user)
+                 | d(ansible_ssh_user)
+                 | d(ansible_user))
+       | d(lookup('id', 'euname'), True) }}
   vars:
   - inv_host: >-
       {{ ansible_version.full
