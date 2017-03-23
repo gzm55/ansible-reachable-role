@@ -4,16 +4,31 @@
   become: False
   become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
   vars:
+  - inv_host: >-
+      {{ ansible_version.full
+         | version_compare('2.0', '<')
+         | ternary(hostvars[inventory_hostname].ansible_ssh_host,
+                   hostvars[inventory_hostname].ansible_ssh_host | d(hostvars[inventory_hostname].ansible_host, True))
+         | d(inventory_hostname) }}
+  - inv_port: >-
+      {{ ansible_version.full
+         | version_compare('2.0', '<')
+         | ternary(ansible_ssh_port, ansible_ssh_port | d(ansible_port)) }}
+  - inv_user: >-
+      {{ ansible_version.full
+         | version_compare('2.0', '<')
+         | ternary(ansible_ssh_user, ansible_ssh_user | d(ansible_user))
+         | d(lookup('id', 'euname'), True) }}
   - ansible_become: False
-  - ansible_become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
+  - ansible_become_user: "{{ inv_user }}"
   - inv_conn: "{{ (hostvars[inventory_hostname].ansible_connection | d('ssh') | intersect(['smart', 'paramiko']) | list | length == 1)
                   | ternary('ssh', hostvars[inventory_hostname].ansible_connection | d('ssh')) }}"
   when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd']) | list | length == 1
   wait_for:
-    host: "{{ hostvars[inventory_hostname].ansible_host | d(inventory_hostname) }}"
+    host: "{{ inv_host }}"
     port: "{{ inv_conn | extract(
-              { 'ssh': ansible_port | d(22),
-                'winrm': ansible_port | d((ansible_winrm_scheme|d('https') == 'https') | ternary(5986, 5985)),
+              { 'ssh': inv_port | d(22),
+                'winrm': inv_port | d((ansible_winrm_scheme|d('https') == 'https') | ternary(5986, 5985)),
                 'funcd': 51234,
               }) }}"
     state: started

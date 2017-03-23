@@ -3,3 +3,4 @@ baidu80 ansible_host=baidu.com ansible_port=80 ansible_become=True
 github.com
 github80 ansible_host=github.com  ansible_port=443
 docker-test ansible_connection=docker
+github-old-style ansible_ssh_host=github.com  ansible_ssh_port=443 ansible_host=fake.com  ansible_port=123456
