@@ -7,13 +7,20 @@
   - inv_host: >-
       {{ ansible_version.full
          | version_compare('2.0', '<')
-         | ternary(hostvars[inventory_hostname].ansible_ssh_host,
-                   hostvars[inventory_hostname].ansible_ssh_host | d(hostvars[inventory_hostname].ansible_host, True))
+         | ternary(hostvars[inventory_hostname].ansible_ssh_host | d(ansible_ssh_host, True),
+                   hostvars[inventory_hostname].ansible_ssh_host
+                   | d(hostvars[inventory_hostname].ansible_host, True)
+                   | d(ansible_ssh_host, True)
+                   | d(ansible_host, True))
          | d(inventory_hostname) }}
   - inv_port: >-
       {{ ansible_version.full
          | version_compare('2.0', '<')
-         | ternary(ansible_ssh_port, ansible_ssh_port | d(ansible_port))
+         | ternary(hostvars[inventory_hostname].ansible_ssh_port | d(ansible_ssh_port),
+                   hostvars[inventory_hostname].ansible_ssh_port
+                   | d(hostvars[inventory_hostname].ansible_port)
+                   | d(ansible_ssh_port)
+                   | d(ansible_port))
          | d(0) }}
   - inv_user: >-
       {{ ansible_version.full
