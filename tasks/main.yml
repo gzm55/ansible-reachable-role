@@ -7,12 +7,9 @@
   - inv_host: >-
       {{ ansible_version.full
          | version_compare('2.0', '<')
-         | ternary(hostvars[inventory_hostname].ansible_ssh_host | d(ansible_ssh_host, True),
-                   hostvars[inventory_hostname].ansible_ssh_host
-                   | d(hostvars[inventory_hostname].ansible_host, True)
-                   | d(ansible_ssh_host, True)
-                   | d(ansible_host, True))
-         | d(inventory_hostname) }}
+         | ternary(hostvars[inventory_hostname].ansible_ssh_host,
+                   hostvars[inventory_hostname].ansible_ssh_host | d(hostvars[inventory_hostname].ansible_host, True))
+         | d(inventory_hostname, True) }}
   - inv_port: >-
       {{ ansible_version.full
          | version_compare('2.0', '<')
@@ -21,22 +18,31 @@
                    | d(hostvars[inventory_hostname].ansible_port)
                    | d(ansible_ssh_port)
                    | d(ansible_port))
-         | d(0) }}
-  - inv_user: >-
+         | d(omit) }}
+  - inv_raw_conn: "{{ hostvars[inventory_hostname].ansible_connection | d('smart', True) }}"
+  - inv_conn: >-
+      {{ ( [ inv_raw_conn ]
+           | intersect(['smart', 'paramiko'])
+           | list
+           | length == 1 )
+         | ternary('ssh', inv_raw_conn) }}
+  - ansible_become: False
+  - ansible_become_user: >-
       {{ ansible_version.full
          | version_compare('2.0', '<')
-         | ternary(ansible_ssh_user, ansible_ssh_user | d(ansible_user))
+         | ternary(hostvars[inventory_hostname].ansible_ssh_user
+                   | d(ansible_ssh_user),
+                   hostvars[inventory_hostname].ansible_ssh_user
+                   | d(hostvars[inventory_hostname].ansible_user)
+                   | d(ansible_ssh_user)
+                   | d(ansible_user))
          | d(lookup('id', 'euname'), True) }}
-  - ansible_become: False
-  - ansible_become_user: "{{ inv_user }}"
-  - inv_conn: "{{ (hostvars[inventory_hostname].ansible_connection | d('ssh') | intersect(['smart', 'paramiko']) | list | length == 1)
-                  | ternary('ssh', hostvars[inventory_hostname].ansible_connection | d('ssh')) }}"
   when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd']) | list | length == 1
   wait_for:
     host: "{{ inv_host }}"
     port: "{{ inv_conn | extract(
-              { 'ssh': (inv_port | int != 0) | ternary(inv_port | int, 22),
-                'winrm': (inv_port | int != 0) | ternary(inv_port | int, (ansible_winrm_scheme|d('https') == 'https') | ternary(5986, 5985)),
+              { 'ssh': (inv_port != omit) | ternary(inv_port | int, 22),
+                'winrm': (inv_port != omit) | ternary(inv_port | int, (ansible_winrm_scheme|d('https') == 'https') | ternary(5986, 5985)),
                 'funcd': 51234,
               }) }}"
     state: started

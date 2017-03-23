@@ -4,3 +4,4 @@ github.com
 github80 ansible_host=github.com  ansible_port=443
 docker-test ansible_connection=docker
 github-old-style ansible_ssh_host=github.com  ansible_ssh_port=443 ansible_host=fake.com  ansible_port=123456
+paramiko-test ansible_connection=paramiko ansible_ssh_host=github.com  ansible_ssh_port=443
