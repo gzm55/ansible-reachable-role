@@ -28,8 +28,8 @@
   wait_for:
     host: "{{ inv_host }}"
     port: "{{ inv_conn | extract(
-              { 'ssh': (inv_port != 0) | ternary(inv_port, 22),
-                'winrm': (inv_port !=0) | ternary(inv_port, (ansible_winrm_scheme|d('https') == 'https') | ternary(5986, 5985)),
+              { 'ssh': (inv_port | int != 0) | ternary(inv_port | int, 22),
+                'winrm': (inv_port | int != 0) | ternary(inv_port | int, (ansible_winrm_scheme|d('https') == 'https') | ternary(5986, 5985)),
                 'funcd': 51234,
               }) }}"
     state: started
