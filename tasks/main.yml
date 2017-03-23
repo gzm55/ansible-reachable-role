@@ -13,7 +13,8 @@
   - inv_port: >-
       {{ ansible_version.full
          | version_compare('2.0', '<')
-         | ternary(ansible_ssh_port, ansible_ssh_port | d(ansible_port)) }}
+         | ternary(ansible_ssh_port, ansible_ssh_port | d(ansible_port))
+         | d(0) }}
   - inv_user: >-
       {{ ansible_version.full
          | version_compare('2.0', '<')
@@ -27,8 +28,8 @@
   wait_for:
     host: "{{ inv_host }}"
     port: "{{ inv_conn | extract(
-              { 'ssh': inv_port | d(22),
-                'winrm': inv_port | d((ansible_winrm_scheme|d('https') == 'https') | ternary(5986, 5985)),
+              { 'ssh': (inv_port != 0) | ternary(inv_port, 22),
+                'winrm': (inv_port !=0) | ternary(inv_port, (ansible_winrm_scheme|d('https') == 'https') | ternary(5986, 5985)),
                 'funcd': 51234,
               }) }}"
     state: started
