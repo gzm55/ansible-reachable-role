@@ -1,32 +1,16 @@
 ---
 - name: remote managing port should be reachable
   delegate_to: localhost
-  become: False
-  become_user: >-
-    {{ ansible_version.full
-       | version_compare('2.0', '<')
-       | ternary(hostvars[inventory_hostname].ansible_ssh_user
-                 | d(ansible_ssh_user),
-                 hostvars[inventory_hostname].ansible_ssh_user
-                 | d(hostvars[inventory_hostname].ansible_user)
-                 | d(ansible_ssh_user)
-                 | d(ansible_user))
-       | d(lookup('id', 'euname'), True) }}
   vars:
   - inv_host: >-
-      {{ ansible_version.full
-         | version_compare('2.0', '<')
-         | ternary(hostvars[inventory_hostname].ansible_ssh_host,
-                   hostvars[inventory_hostname].ansible_ssh_host | d(hostvars[inventory_hostname].ansible_host, True))
+      {{ hostvars[inventory_hostname].ansible_ssh_host
+         | d(hostvars[inventory_hostname].ansible_host, True)
          | d(inventory_hostname, True) }}
   - inv_port: >-
-      {{ ansible_version.full
-         | version_compare('2.0', '<')
-         | ternary(hostvars[inventory_hostname].ansible_ssh_port | d(ansible_ssh_port),
-                   hostvars[inventory_hostname].ansible_ssh_port
-                   | d(hostvars[inventory_hostname].ansible_port)
-                   | d(ansible_ssh_port)
-                   | d(ansible_port))
+      {{ hostvars[inventory_hostname].ansible_ssh_port
+         | d(hostvars[inventory_hostname].ansible_port)
+         | d(ansible_ssh_port)
+         | d(ansible_port)
          | d(omit) }}
   - inv_raw_conn: "{{ hostvars[inventory_hostname].ansible_connection | d('smart', True) }}"
   - inv_conn: >-
@@ -37,16 +21,12 @@
          | ternary('ssh', inv_raw_conn) }}
   - ansible_become: False
   - ansible_become_user: >-
-      {{ ansible_version.full
-         | version_compare('2.0', '<')
-         | ternary(hostvars[inventory_hostname].ansible_ssh_user
-                   | d(ansible_ssh_user),
-                   hostvars[inventory_hostname].ansible_ssh_user
-                   | d(hostvars[inventory_hostname].ansible_user)
-                   | d(ansible_ssh_user)
-                   | d(ansible_user))
+      {{ hostvars[inventory_hostname].ansible_ssh_user
+         | d(hostvars[inventory_hostname].ansible_user)
+         | d(ansible_ssh_user)
+         | d(ansible_user)
          | d(lookup('id', 'euname'), True) }}
-  when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd']) | list | length == 1
+  when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd']) | list | length
   wait_for:
     host: "{{ inv_host }}"
     port: "{{ inv_conn | extract(

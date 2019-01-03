@@ -1,15 +1,14 @@
 [![Build Status](https://travis-ci.org/gzm55/ansible-reachable-role.svg?branch=master)](https://travis-ci.org/gzm55/ansible-reachable-role)
 
-reachable
-=========
+reachable (1.0.0-dev)
+=====================
 
 Role for testing reachability of remote tcp ports of ansible connections for each host.
 
 For `ssh`/`paramiko`/`smart` connection, use `ansible_port` or 22 port,
-for `winrm` connection, use `ansible_port` or [5985/5986](https://az1ss.prod.mediav.com:8443/manager?project=etl-reports&flow=360realtime),
+for `winrm` connection, use `ansible_port` or [5985/5986](https://docs.microsoft.com/en-us/windows/desktop/winrm/installation-and-configuration-for-windows-remote-management),
 for `funcd` connection, use [51234](http://advanced-sysadmin-stuff.blogspot.co.id/2011/03/func-fedora-unified-network-controller.html),
 for other local or local container connection, just skip checking.
-
 
 Requirements
 ------------
@@ -17,6 +16,8 @@ Requirements
 python modules:
 * ansible>=2.0
 * jinja2>=2.6
+
+For ansible < 2.0, use version 0.0.1.
 
 Role Variables
 --------------
