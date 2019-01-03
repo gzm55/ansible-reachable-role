@@ -30,9 +30,9 @@
   wait_for:
     host: "{{ inv_host }}"
     port: "{{ inv_conn | extract(
-              { ssh: inv_port | d(22, True),
-                winrm: inv_port | d((ansible_winrm_scheme | d('https') == 'https') | ternary(5986, 5985), True),
-                funcd: 51234,
+              { 'ssh': inv_port | d(22, True),
+                'winrm': inv_port | d((ansible_winrm_scheme | d('https') == 'https') | ternary(5986, 5985), True),
+                'funcd': 51234,
               }) | int }}"
     state: started
     connect_timeout: 2
