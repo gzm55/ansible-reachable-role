@@ -13,17 +13,15 @@
       ssh: 22
       winrm: "{{ (ansible_winrm_scheme | d('https') == 'https') | ternary(5986, 5985) }}"
       funcd: 51234
-  - default_port: "{{ inv_conn | extract(default_ports) | d(22) }}"
+  - default_port: "{{ inv_conn | extract(default_ports) | d(22, True) }}"
   - inv_raw_conn: "{{ hostvars[inventory_hostname].ansible_connection | d('smart', True) }}"
   - inv_conn: >-
       {{ [ inv_raw_conn ]
          | intersect(['smart', 'paramiko', 'persistent'])
-         | list
-         | length
          | ternary('ssh', inv_raw_conn) }}
   - ansible_become: False
   - ansible_become_user: "{{ lookup('id', 'euname') }}"
-  when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd']) | list | length
+  when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd'])
   wait_for:
     host: >-
       {{ hostvars[inventory_hostname].ansible_ssh_host
@@ -32,9 +30,7 @@
     port: >-
       {{ [ inv_conn ]
          | intersect(['funcd'])
-         | list
-         | length
-         | ternary(default_port, inv_port | d(default_port)) }}
+         | ternary(default_port, inv_port | d(default_port, True)) }}
     state: started
     connect_timeout: 2
     timeout: 2
