@@ -3,37 +3,38 @@
   delegate_to: localhost
   vars:
   - inv_host: >-
-      {{ hostvars[inventory_hostname].ansible_ssh_host
-         | d(hostvars[inventory_hostname].ansible_host, True)
-         | d(inventory_hostname, True) }}
   - inv_port: >-
       {{ hostvars[inventory_hostname].ansible_ssh_port
          | d(hostvars[inventory_hostname].ansible_port)
          | d(ansible_ssh_port)
          | d(ansible_port)
          | d }}
+  - default_ports:
+      ssh: 22
+      winrm: "{{ ansible_winrm_scheme | d('https') == 'https') | ternary(5986, 5985) }}"
+      funcd: 51234
+  - default_port: "{{ inv_conn | extract(default_ports) | d(22) }}"
   - inv_raw_conn: "{{ hostvars[inventory_hostname].ansible_connection | d('smart', True) }}"
   - inv_conn: >-
-      {{ ( [ inv_raw_conn ]
-           | intersect(['smart', 'paramiko'])
-           | list
-           | length == 1 )
+      {{ [ inv_raw_conn ]
+         | intersect(['smart', 'paramiko', 'persistent'])
+         | list
+         | length
          | ternary('ssh', inv_raw_conn) }}
   - ansible_become: False
-  - ansible_become_user: >-
-      {{ hostvars[inventory_hostname].ansible_ssh_user
-         | d(hostvars[inventory_hostname].ansible_user)
-         | d(ansible_ssh_user)
-         | d(ansible_user)
-         | d(lookup('id', 'euname'), True) }}
+  - ansible_become_user: "{{ lookup('id', 'euname') }}"
   when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd']) | list | length
   wait_for:
-    host: "{{ inv_host }}"
-    port: "{{ inv_conn | extract(
-              { 'ssh': inv_port | d(22, True),
-                'winrm': inv_port | d((ansible_winrm_scheme | d('https') == 'https') | ternary(5986, 5985), True),
-                'funcd': 51234,
-              }) | int }}"
+    host: >-
+      {{ hostvars[inventory_hostname].ansible_ssh_host
+         | d(hostvars[inventory_hostname].ansible_host, True)
+         | d(inventory_hostname, True) }}
+    port: >-
+      {{ [ inv_conn ]
+         | intersect(['funcd'])
+         | list
+         | length
+         | ternary(default_port, inv_port | d(default_port)) }}
     state: started
     connect_timeout: 2
     timeout: 2
