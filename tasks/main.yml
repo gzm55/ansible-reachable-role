@@ -2,7 +2,6 @@
 - name: remote managing port should be reachable
   delegate_to: localhost
   vars:
-  - inv_host: >-
   - inv_port: >-
       {{ hostvars[inventory_hostname].ansible_ssh_port
          | d(hostvars[inventory_hostname].ansible_port)
@@ -20,7 +19,7 @@
          | intersect(['smart', 'paramiko', 'persistent'])
          | ternary('ssh', inv_raw_conn) }}
   - ansible_become: False
-  - ansible_become_user: "{{ lookup('id', 'euname') }}"
+  - ansible_become_user: "{{ lookup('id', 'uname') }}"
   when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd'])
   wait_for:
     host: >-
