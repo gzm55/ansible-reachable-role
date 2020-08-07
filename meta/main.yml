@@ -29,5 +29,6 @@ dependencies:
 - role: gzm55.require_implicity_localhost
   version: master
 - role: gzm55.local_id_plugin
+  version: master
 - role: gzm55.require_disabe_become
   version: "1.0.0"
