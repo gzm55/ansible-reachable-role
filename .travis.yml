@@ -1,9 +1,8 @@
 ---
-language: python
-python: "2.7"
+os: linux
+dist: xenial
 
-# Use the new container infrastructure
-sudo: false
+language: python
 
 # Install ansible
 addons:
