@@ -20,6 +20,7 @@ jobs:
         python3 --version
         pip3 --version
         ansible --version
+        env
 
     - name: prepare tests
       run: |
