@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/gzm55/ansible-reachable-role.svg?branch=master)](https://travis-ci.org/gzm55/ansible-reachable-role)
 
-reachable (1.0.2-dev)
+reachable (2.0.0-dev)
 =====================
 
 Role for testing reachability of remote tcp ports of ansible connections for each host.

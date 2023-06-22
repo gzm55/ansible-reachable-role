@@ -11,34 +11,34 @@ addons:
     - python-pip
 
 install:
-  # Install ansible
-  - pip install ansible ansible-lint
+# Install ansible
+- pip install ansible ansible-lint
 
-  # Check ansible version
-  - ansible --version
+# Check ansible version
+- ansible --version
 
-  # Install python module and role dependencies
-  - test -f requirements.txt && pip install -r requirements.txt
-  - test -f requirements.yml && ansible-galaxy install -p tests/roles -r requirements.yml
+# Install python module and role dependencies
+- test -f requirements.txt && pip install -r requirements.txt
+- test -f requirements.yml && ansible-galaxy install -p tests/roles -r requirements.yml
 
-  # Create ansible.cfg with correct roles_path
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
+# Create ansible.cfg with correct roles_path
+- printf '[defaults]\nroles_path=../' >ansible.cfg
 
 script:
-  - set -e
+- set -e
 
-  # Basic role syntax check
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
-  - ansible-lint .
-  - ansible-lint tests/test.yml
+# Basic role syntax check
+- ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+- ansible-lint .
+- ansible-lint tests/test.yml
 
-  # run test
-  - true && ! ansible-playbook tests/test.yml -i tests/inventory
-  - ansible-playbook tests/test.yml -i tests/inventory --limit '!baidu.com'
-  - ANSIBLE_REMOTE_PORT=80 ansible-playbook tests/test.yml -i tests/inventory
-  - ANSIBLE_REMOTE_PORT=80 ansible-playbook tests/test.yml -i tests/inventory --become
-  - true && ! ANSIBLE_REMOTE_PORT=11 ansible-playbook tests/test.yml -i tests/inventory
-  - ANSIBLE_REMOTE_PORT=11 ansible-playbook tests/test.yml -i tests/inventory --limit '!baidu.com:!github.com' -e 'ansible_become=True'
+# run test
+- true && ! ansible-playbook tests/test.yml -i tests/inventory
+- ansible-playbook tests/test.yml -i tests/inventory --limit '!baidu.com'
+- ANSIBLE_REMOTE_PORT=80 ansible-playbook tests/test.yml -i tests/inventory
+- ANSIBLE_REMOTE_PORT=80 ansible-playbook tests/test.yml -i tests/inventory --become
+- true && ! ANSIBLE_REMOTE_PORT=11 ansible-playbook tests/test.yml -i tests/inventory
+- ANSIBLE_REMOTE_PORT=11 ansible-playbook tests/test.yml -i tests/inventory --limit '!baidu.com:!github.com' -e 'ansible_become=True'
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

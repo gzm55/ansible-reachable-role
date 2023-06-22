@@ -1,2 +1,1 @@
-ansible>=2.0
 jinja2>=2.6

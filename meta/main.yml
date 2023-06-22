@@ -1,24 +1,22 @@
 galaxy_info:
+  role_name: reachable
+  namespace: gzm55
   author: James Z.M. Gao
   description: a simple role for testing reachability of ssh ports for each host
 
   license: BSD
 
-  min_ansible_version: 2.0
+  min_ansible_version: "2.0"
 
   platforms:
   - name: GenericBSD
-    versions:
-    - any
+    versions: [all]
   - name: GenericLinux
-    versions:
-    - any
+    versions: [all]
   - name: Windows
-    versions:
-    - all
+    versions: [all]
   - name: GenericUNIX
-    versions:
-    - any
+    versions: [all]
 
   galaxy_tags:
   - networking
@@ -31,4 +29,4 @@ dependencies:
 - role: gzm55.local_id_plugin
   version: master
 - role: gzm55.require_disabe_become
-  version: "1.0.0"
+  version: "2.0.0"

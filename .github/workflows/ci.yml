@@ -1,0 +1,68 @@
+---
+name: ci workflow
+"on": push
+
+env:
+  ANSIBLE_ROLES_PATH: "..:tests/roles"
+
+jobs:
+  test-job:
+    name: test the role
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: print versions
+      run: |
+        set -x
+        uname -a
+        id
+        python3 --version
+        pip3 --version
+        ansible --version
+
+    - name: prepare tests
+      run: |
+        set -x
+        pip3 install -r requirements.txt
+        ansible-galaxy install -p tests/roles -r requirements.yml
+
+    - name: syntax check
+      run: ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+
+    - name: Run test
+      run: |
+        set -x
+        true && ! ansible-playbook tests/test.yml -i tests/inventory
+        ansible-playbook tests/test.yml -i tests/inventory --limit '!baidu.com'
+        ANSIBLE_REMOTE_PORT=80 ansible-playbook tests/test.yml -i tests/inventory
+        ANSIBLE_REMOTE_PORT=80 ansible-playbook tests/test.yml -i tests/inventory --become
+        true && ! ANSIBLE_REMOTE_PORT=11 ansible-playbook tests/test.yml -i tests/inventory
+        ANSIBLE_REMOTE_PORT=11 ansible-playbook tests/test.yml -i tests/inventory --limit '!baidu.com:!github.com' -e 'ansible_become=True'
+
+  lint-job:
+    name: lint codes
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: prepare lint
+      run: |
+        pip3 install -r requirements.txt
+        pip3 install ansible-lint
+        ansible-lint --version
+        ansible-galaxy install -p tests/roles -r requirements.yml
+    - name: lint
+      run: ansible-lint --show-relpath --exclude tests/roles
+
+  deploy-job:
+    name: deploy the role on tag
+    runs-on: ubuntu-22.04
+    needs: [test-job, lint-job]
+    if: github.ref_type == 'tag'
+    steps:
+    - uses: actions/checkout@v3
+    - name: publish the role to Galaxy
+      uses: robertdebock/galaxy-action@1.2.1
+      with:
+        galaxy_api_key: ${{ secrets.GALAXY_API_KEY }}
+        git_branch: ${{ github.ref_name }}
