@@ -14,9 +14,10 @@ Requirements
 ------------
 
 python modules:
-* ansible>=2.0
+* ansible>=2.8
 * jinja2>=2.6
 
+For ansible < 2.8, use version 1.0.1.
 For ansible < 2.0, use version 0.0.1.
 
 Role Variables

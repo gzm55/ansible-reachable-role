@@ -21,7 +21,7 @@
     ansible_become: False
     ansible_become_user: "{{ lookup('id', 'uname') }}"
   when: ([ inv_conn ]) | intersect(['ssh', 'winrm', 'funcd'])
-  wait_for:
+  ansible.builtin.wait_for:
     host: >-
       {{ hostvars[inventory_hostname].ansible_ssh_host
          | d(hostvars[inventory_hostname].ansible_host, True)
